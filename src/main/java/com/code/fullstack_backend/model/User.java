@@ -1,25 +1,28 @@
 package com.code.fullstack_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-
-@Entity
 public class User {
 
-    @Id
-    @GeneratedValue
     private Long id;
-
     private String name;
     private String email;
     private String neighborhood;
     private String city;
     private String street;
-
-    @Column(unique = true) // Garantir que o RG seja único
     private String rg;
+
+    // Construtor padrão (sem argumentos)
+    public User() {}
+
+    // Construtor com todos os argumentos
+    public User(Long id, String name, String email, String neighborhood, String city, String street, String rg) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.neighborhood = neighborhood;
+        this.city = city;
+        this.street = street;
+        this.rg = rg;
+    }
 
     // Getters e Setters
     public Long getId() {

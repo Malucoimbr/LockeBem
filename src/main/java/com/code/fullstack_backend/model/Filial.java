@@ -1,59 +1,40 @@
 package com.code.fullstack_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-
-@Entity
 public class Filial {
 
-    @Id
-    @GeneratedValue
     private Long id;
-
-    private String cidade;
-
-    @Column(unique = true)
-    private String codigoFilial; // Código único da filial
-
-    private String estado;
     private String nome;
-    private String numero;
+    private String cidade;
+    private String estado;
     private String rua;
-    private String telefone; // Telefone da filial
+    private String numero;
+    private String telefone;
+    private String codigoFilial;
+    private String cnpj; // Novo campo
 
-    // Getters e Setters
+    // Default constructor
+    public Filial() {}
+
+    // Constructor with all parameters
+    public Filial(Long id, String nome, String cidade, String estado, String rua, String numero, String telefone, String codigoFilial, String cnpj) {
+        this.id = id;
+        this.nome = nome;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.rua = rua;
+        this.numero = numero;
+        this.telefone = telefone;
+        this.codigoFilial = codigoFilial;
+        this.cnpj = cnpj; // Inicializa o novo campo
+    }
+
+    // Getters and setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getCodigoFilial() {
-        return codigoFilial;
-    }
-
-    public void setCodigoFilial(String codigoFilial) {
-        this.codigoFilial = codigoFilial;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
     public String getNome() {
@@ -64,12 +45,20 @@ public class Filial {
         this.nome = nome;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getCidade() {
+        return cidade;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 
     public String getRua() {
@@ -80,11 +69,35 @@ public class Filial {
         this.rua = rua;
     }
 
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
     public String getTelefone() {
         return telefone;
     }
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public String getCodigoFilial() {
+        return codigoFilial;
+    }
+
+    public void setCodigoFilial(String codigoFilial) {
+        this.codigoFilial = codigoFilial;
+    }
+
+    public String getCnpj() { // Novo getter
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) { // Novo setter
+        this.cnpj = cnpj;
     }
 }
