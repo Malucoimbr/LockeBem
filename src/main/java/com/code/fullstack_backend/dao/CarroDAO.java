@@ -8,7 +8,6 @@ import java.util.List;
 
 public class CarroDAO {
 
-    // Método para verificar se a placa já está registrada
     public boolean existsByPlaca(String placa) throws SQLException {
         String sql = "SELECT COUNT(*) FROM carros WHERE placa = ?";
         try (Connection connection = DatabaseConnection.getConnection();
@@ -38,7 +37,6 @@ public class CarroDAO {
         return false;
     }
 
-    // Método para obter todos os carros
     public List<Carro> getAllCarros() throws SQLException {
         List<Carro> carros = new ArrayList<>();
         String sql = "SELECT * FROM carros";
@@ -60,7 +58,6 @@ public class CarroDAO {
         return carros;
     }
 
-    // Método para obter carro por ID
     public Carro getCarroById(Long id) throws SQLException {
         Carro carro = null;
         String sql = "SELECT * FROM carros WHERE id = ?";
@@ -85,17 +82,14 @@ public class CarroDAO {
 
     public void addCarro(Carro carro) throws SQLException {
         try {
-            // Verifica se já existe um carro com a mesma placa
             if (existsByPlaca(carro.getPlaca())) {
                 throw new SQLException("Já existe um carro com a mesma placa.");
             }
 
-            // Verifica se o código de filial é válido
             if (!existsByCodigoFilial(carro.getCodigoFilial())) {
                 throw new SQLException("Código de filial inválido.");
             }
 
-            // SQL de inserção do carro
             String sql = "INSERT INTO carros (placa, modelo, ano_fab, km, tipo_carro, codigoFilial) VALUES (?, ?, ?, ?, ?, ?)";
 
             try (Connection connection = DatabaseConnection.getConnection();
@@ -108,26 +102,23 @@ public class CarroDAO {
                 statement.setString(5, carro.getTipoCarro());
                 statement.setString(6, carro.getCodigoFilial()); // Associando o código da filial
 
-                // Executa a atualização
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            // Registra o erro com mais detalhes para depuração
             System.out.println("Erro ao adicionar carro: " + e.getMessage());
-            // Repassa a exceção para cima (ou pode customizar a exceção se necessário)
             throw new SQLException("Erro ao adicionar carro. Verifique os detalhes e tente novamente.", e);
         }
     }
 
 
-    // Método para atualizar um carro existente
+
     public void updateCarro(Long id, Carro carro) throws SQLException {
-        // Verifica se a placa já existe para outro carro (não para o carro atual)
+
         if (existsByPlaca(carro.getPlaca()) && !getCarroById(id).getPlaca().equals(carro.getPlaca())) {
             throw new SQLException("Já existe um carro com a mesma placa.");
         }
 
-        // Verifica se o código da filial existe
+
         if (!existsByCodigoFilial(carro.getCodigoFilial())) {
             throw new SQLException("Código de filial inválido.");
         }
@@ -146,7 +137,7 @@ public class CarroDAO {
         }
     }
 
-    // Método para deletar um carro
+
     public void deleteCarro(Long id) throws SQLException {
         String sql = "DELETE FROM carros WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
