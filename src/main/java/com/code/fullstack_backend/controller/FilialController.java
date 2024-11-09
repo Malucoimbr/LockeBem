@@ -22,10 +22,10 @@ public class FilialController {
         return filialDAO.getAllFiliais();
     }
 
-    // Rota para pegar uma filial específica por ID
-    @GetMapping("/{id}")
-    public Filial getFilialById(@PathVariable Long id) throws SQLException {
-        return filialDAO.getFilialById(id);
+    // Rota para pegar uma filial específica por codigoFilial
+    @GetMapping("/{codigoFilial}")
+    public Filial getFilialByCodigoFilial(@PathVariable String codigoFilial) throws SQLException {
+        return filialDAO.getFilialByCodigoFilial(codigoFilial);
     }
 
     @PostMapping
@@ -34,22 +34,20 @@ public class FilialController {
             filialDAO.addFilial(filial);
             return ResponseEntity.status(201).body("Filial adicionada com sucesso!");
         } catch (SQLException e) {
-            e.printStackTrace(); // Isso ajuda a exibir o erro completo no log do servidor
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Erro ao adicionar filial: " + e.getMessage());
         }
     }
 
-
-    // Rota para atualizar uma filial existente
-    @PutMapping("/{id}")
-    public void updateFilial(@PathVariable Long id, @RequestBody Filial filial) throws SQLException {
-        filialDAO.updateFilial(id, filial);
+    @PutMapping("/codigo/{codigoFilial}")
+    public void updateFilial(@PathVariable String codigoFilial, @RequestBody Filial filial) throws SQLException {
+        filialDAO.updateFilial(codigoFilial, filial);
     }
 
     // Rota para deletar uma filial
-    @DeleteMapping("/{id}")
-    public void deleteFilial(@PathVariable Long id) throws SQLException {
-        filialDAO.deleteFilial(id);
+    @DeleteMapping("/{codigoFilial}")
+    public void deleteFilial(@PathVariable String codigoFilial) throws SQLException {
+        filialDAO.deleteFilial(codigoFilial);
     }
 
     // Rota para verificar se o código da filial já existe

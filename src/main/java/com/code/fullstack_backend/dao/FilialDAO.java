@@ -17,7 +17,6 @@ public class FilialDAO {
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 Filial filial = new Filial();
-                filial.setId(resultSet.getLong("id"));
                 filial.setNome(resultSet.getString("nome"));
                 filial.setCidade(resultSet.getString("cidade"));
                 filial.setEstado(resultSet.getString("estado"));
@@ -25,24 +24,23 @@ public class FilialDAO {
                 filial.setNumero(resultSet.getString("numero"));
                 filial.setTelefone(resultSet.getString("telefone"));
                 filial.setCodigoFilial(resultSet.getString("codigoFilial"));
-                filial.setCnpj(resultSet.getString("cnpj"));  // Adicionando o campo cnpj
+                filial.setCnpj(resultSet.getString("cnpj"));
                 filiais.add(filial);
             }
         }
         return filiais;
     }
 
-    // Método para obter filial por ID
-    public Filial getFilialById(Long id) throws SQLException {
+    // Método para obter filial por codigoFilial
+    public Filial getFilialByCodigoFilial(String codigoFilial) throws SQLException {
         Filial filial = null;
-        String sql = "SELECT * FROM filiais WHERE id = ?";
+        String sql = "SELECT * FROM filiais WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, id);
+            statement.setString(1, codigoFilial);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     filial = new Filial();
-                    filial.setId(resultSet.getLong("id"));
                     filial.setNome(resultSet.getString("nome"));
                     filial.setCidade(resultSet.getString("cidade"));
                     filial.setEstado(resultSet.getString("estado"));
@@ -50,7 +48,7 @@ public class FilialDAO {
                     filial.setNumero(resultSet.getString("numero"));
                     filial.setTelefone(resultSet.getString("telefone"));
                     filial.setCodigoFilial(resultSet.getString("codigoFilial"));
-                    filial.setCnpj(resultSet.getString("cnpj"));  // Adicionando o campo cnpj
+                    filial.setCnpj(resultSet.getString("cnpj"));
                 }
             }
         }
@@ -69,14 +67,14 @@ public class FilialDAO {
             statement.setString(5, filial.getNumero());
             statement.setString(6, filial.getTelefone());
             statement.setString(7, filial.getCodigoFilial());
-            statement.setString(8, filial.getCnpj());  // Adicionando o campo cnpj
+            statement.setString(8, filial.getCnpj());
             statement.executeUpdate();
         }
     }
 
-    // Método para atualizar uma filial existente
-    public void updateFilial(Long id, Filial filial) throws SQLException {
-        String sql = "UPDATE filiais SET nome = ?, cidade = ?, estado = ?, rua = ?, numero = ?, telefone = ?, codigoFilial = ?, cnpj = ? WHERE id = ?";
+    // Método para atualizar uma filial
+    public void updateFilial(String codigoFilial, Filial filial) throws SQLException {
+        String sql = "UPDATE filiais SET nome = ?, cidade = ?, estado = ?, rua = ?, numero = ?, telefone = ?, cnpj = ? WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, filial.getNome());
@@ -85,19 +83,18 @@ public class FilialDAO {
             statement.setString(4, filial.getRua());
             statement.setString(5, filial.getNumero());
             statement.setString(6, filial.getTelefone());
-            statement.setString(7, filial.getCodigoFilial());
-            statement.setString(8, filial.getCnpj());  // Atualizando o campo cnpj
-            statement.setLong(9, id);
+            statement.setString(7, filial.getCnpj());
+            statement.setString(8, codigoFilial);  // Usando codigoFilial como chave
             statement.executeUpdate();
         }
     }
 
     // Método para excluir uma filial
-    public void deleteFilial(Long id) throws SQLException {
-        String sql = "DELETE FROM filiais WHERE id = ?";
+    public void deleteFilial(String codigoFilial) throws SQLException {
+        String sql = "DELETE FROM filiais WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, id);
+            statement.setString(1, codigoFilial);
             statement.executeUpdate();
         }
     }

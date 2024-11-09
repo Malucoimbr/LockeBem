@@ -2,7 +2,6 @@ package com.code.fullstack_backend.model;
 
 public class Filial {
 
-    private Long id;
     private String nome;
     private String cidade;
     private String estado;
@@ -17,7 +16,7 @@ public class Filial {
 
     // Constructor with all parameters
     public Filial(Long id, String nome, String cidade, String estado, String rua, String numero, String telefone, String codigoFilial, String cnpj) {
-        this.id = id;
+
         this.nome = nome;
         this.cidade = cidade;
         this.estado = estado;
@@ -28,14 +27,6 @@ public class Filial {
         this.cnpj = cnpj; // Inicializa o novo campo
     }
 
-    // Getters and setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
