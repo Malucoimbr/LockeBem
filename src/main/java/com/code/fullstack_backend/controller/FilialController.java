@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/filiais")
+@RequestMapping("/api/filial")
 @CrossOrigin(origins = "http://localhost:3000")
 public class FilialController {
 
@@ -18,8 +18,8 @@ public class FilialController {
 
     // Rota para listar todas as filiais
     @GetMapping
-    public List<Filial> getAllFiliais() throws SQLException {
-        return filialDAO.getAllFiliais();
+    public List<Filial> getAllFilial() throws SQLException {
+        return filialDAO.getAllFilial();
     }
 
     // Rota para pegar uma filial específica por codigoFilial

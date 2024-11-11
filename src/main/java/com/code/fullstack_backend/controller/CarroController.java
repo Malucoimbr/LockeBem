@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/carros")
+@RequestMapping("/api/carro")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CarroController {
 
@@ -19,8 +19,8 @@ public class CarroController {
     private final FilialDAO filialDAO = new FilialDAO();
 
     @GetMapping
-    public List<Carro> getAllCarros() throws SQLException {
-        return carroDAO.getAllCarros();
+    public List<Carro> getAllCarro() throws SQLException {
+        return carroDAO.getAllCarro();
     }
 
     @GetMapping("/{id}")
@@ -38,7 +38,6 @@ public class CarroController {
             return ResponseEntity.status(400).body("Erro ao adicionar carro: " + e.getMessage());
         }
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updateCarro(@PathVariable Long id, @RequestBody Carro carro) {

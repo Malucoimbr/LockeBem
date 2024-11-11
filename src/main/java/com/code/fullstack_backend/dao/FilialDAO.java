@@ -8,10 +8,10 @@ import java.util.List;
 
 public class FilialDAO {
 
-    // Método para obter todas as filiais
-    public List<Filial> getAllFiliais() throws SQLException {
-        List<Filial> filiais = new ArrayList<>();
-        String sql = "SELECT * FROM filiais";
+    // Método para obter todas as filial
+    public List<Filial> getAllFilial() throws SQLException {
+        List<Filial> filialList = new ArrayList<>();
+        String sql = "SELECT * FROM filial";
         try (Connection connection = DatabaseConnection.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
@@ -25,16 +25,17 @@ public class FilialDAO {
                 filial.setTelefone(resultSet.getString("telefone"));
                 filial.setCodigoFilial(resultSet.getString("codigoFilial"));
                 filial.setCnpj(resultSet.getString("cnpj"));
-                filiais.add(filial);
+                filialList.add(filial);
             }
         }
-        return filiais;
+        return filialList;
     }
+
 
     // Método para obter filial por codigoFilial
     public Filial getFilialByCodigoFilial(String codigoFilial) throws SQLException {
         Filial filial = null;
-        String sql = "SELECT * FROM filiais WHERE codigoFilial = ?";
+        String sql = "SELECT * FROM filial WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, codigoFilial);
@@ -57,7 +58,7 @@ public class FilialDAO {
 
     // Método para adicionar uma nova filial
     public void addFilial(Filial filial) throws SQLException {
-        String sql = "INSERT INTO filiais (nome, cidade, estado, rua, numero, telefone, codigoFilial, cnpj) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO filial (nome, cidade, estado, rua, numero, telefone, codigoFilial, cnpj) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, filial.getNome());
@@ -74,7 +75,7 @@ public class FilialDAO {
 
     // Método para atualizar uma filial
     public void updateFilial(String codigoFilial, Filial filial) throws SQLException {
-        String sql = "UPDATE filiais SET nome = ?, cidade = ?, estado = ?, rua = ?, numero = ?, telefone = ?, cnpj = ? WHERE codigoFilial = ?";
+        String sql = "UPDATE filial SET nome = ?, cidade = ?, estado = ?, rua = ?, numero = ?, telefone = ?, cnpj = ? WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, filial.getNome());
@@ -91,7 +92,7 @@ public class FilialDAO {
 
     // Método para excluir uma filial
     public void deleteFilial(String codigoFilial) throws SQLException {
-        String sql = "DELETE FROM filiais WHERE codigoFilial = ?";
+        String sql = "DELETE FROM filial WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, codigoFilial);
@@ -101,7 +102,7 @@ public class FilialDAO {
 
     // Método para verificar se o código da filial já existe
     public boolean existsByCodigoFilial(String codigoFilial) throws SQLException {
-        String sql = "SELECT 1 FROM filiais WHERE codigoFilial = ?";
+        String sql = "SELECT 1 FROM filial WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, codigoFilial);

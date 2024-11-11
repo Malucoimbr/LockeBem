@@ -9,7 +9,7 @@ import java.util.List;
 public class CarroDAO {
 
     public boolean existsByPlaca(String placa) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM carros WHERE placa = ?";
+        String sql = "SELECT COUNT(*) FROM carro WHERE placa = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, placa);
@@ -23,7 +23,7 @@ public class CarroDAO {
     }
 
     public boolean existsByCodigoFilial(String codigoFilial) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM filiais WHERE codigoFilial = ?";
+        String sql = "SELECT COUNT(*) FROM filial WHERE codigoFilial = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, codigoFilial);
@@ -37,14 +37,14 @@ public class CarroDAO {
         return false;
     }
 
-    public List<Carro> getAllCarros() throws SQLException {
+    public List<Carro> getAllCarro() throws SQLException {
         List<Carro> carros = new ArrayList<>();
-        String sql = "SELECT * FROM carros";
+        String sql = "SELECT * FROM carro";
         try (Connection connection = DatabaseConnection.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Carro carro = new Carro();
+                Carro carro = new Carro();  // Usando um nome diferente para a variável
                 carro.setId(resultSet.getLong("id"));
                 carro.setPlaca(resultSet.getString("placa"));
                 carro.setModelo(resultSet.getString("modelo"));
@@ -60,7 +60,7 @@ public class CarroDAO {
 
     public Carro getCarroById(Long id) throws SQLException {
         Carro carro = null;
-        String sql = "SELECT * FROM carros WHERE id = ?";
+        String sql = "SELECT * FROM carro WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
@@ -90,7 +90,7 @@ public class CarroDAO {
                 throw new SQLException("Código de filial inválido.");
             }
 
-            String sql = "INSERT INTO carros (placa, modelo, ano_fab, km, tipo_carro, codigoFilial) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO carro (placa, modelo, ano_fab, km, tipo_carro, codigoFilial) VALUES (?, ?, ?, ?, ?, ?)";
 
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -123,7 +123,7 @@ public class CarroDAO {
             throw new SQLException("Código de filial inválido.");
         }
 
-        String sql = "UPDATE carros SET placa = ?, modelo = ?, ano_fab = ?, km = ?, tipo_carro = ?, codigoFilial = ? WHERE id = ?";
+        String sql = "UPDATE carro SET placa = ?, modelo = ?, ano_fab = ?, km = ?, tipo_carro = ?, codigoFilial = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, carro.getPlaca());
@@ -139,7 +139,7 @@ public class CarroDAO {
 
 
     public void deleteCarro(Long id) throws SQLException {
-        String sql = "DELETE FROM carros WHERE id = ?";
+        String sql = "DELETE FROM carro WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);

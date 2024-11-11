@@ -1,6 +1,5 @@
 package com.code.fullstack_backend.exception;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,12 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class UserNotFoundAdvice {
+public class ClienteNotFoundAdvice {
 
     @ResponseBody
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(ClienteNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> exceptionHandler(UserNotFoundException exception){
+    public Map<String, String> exceptionHandler(ClienteNotFoundException exception) {
         Map<String, String> errorMap = new HashMap<>();
         errorMap.put("errorMessage", exception.getMessage());
 
