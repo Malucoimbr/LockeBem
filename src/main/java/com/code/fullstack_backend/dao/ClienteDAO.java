@@ -51,6 +51,11 @@ public class ClienteDAO {
     }
 
     public void addCliente(Cliente cliente) throws SQLException {
+        // Verificar se o RG já existe
+        if (existsByRg(cliente.getRg())) {
+            throw new SQLException("RG já existe no banco de dados!"); // Lançar exceção se já existir
+        }
+
         String sql = "INSERT INTO Cliente (rg, nome, email, telefone, rua, bairro, numero) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -65,9 +70,10 @@ public class ClienteDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao adicionar cliente: " + e.getMessage());
-            throw e;  // Propaga a exceção para ser capturada no controlador
+            throw e;  // Propaga a exceção para o controlador
         }
     }
+
 
 
     public void updateCliente(Integer rg, Cliente cliente) throws SQLException {
