@@ -11,10 +11,10 @@ public class Filial {
     private String codigoFilial;
     private String cnpj; // Novo campo
 
-    // Default constructor
+
     public Filial() {}
 
-    // Constructor with all parameters
+
     public Filial(Long id, String nome, String cidade, String estado, String rua, String numero, String telefone, String codigoFilial, String cnpj) {
 
         this.nome = nome;
@@ -24,7 +24,7 @@ public class Filial {
         this.numero = numero;
         this.telefone = telefone;
         this.codigoFilial = codigoFilial;
-        this.cnpj = cnpj; // Inicializa o novo campo
+        this.cnpj = cnpj;
     }
 
 
