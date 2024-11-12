@@ -3,6 +3,7 @@ package com.code.fullstack_backend.controller;
 import com.code.fullstack_backend.dao.CarroDAO;
 import com.code.fullstack_backend.dao.FilialDAO;
 import com.code.fullstack_backend.model.Carro;
+import com.code.fullstack_backend.model.CarroTipo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +58,7 @@ public class CarroController {
             return ResponseEntity.status(200).body("Carro deletado com sucesso!");
         } catch (SQLException e) {
             e.printStackTrace();
-            return ResponseEntity.status(400).body(e.getMessage());
+            return ResponseEntity.status(400).body("Erro ao deletar carro: " + e.getMessage());
         }
     }
 }

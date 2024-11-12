@@ -1,15 +1,16 @@
 package com.code.fullstack_backend.model;
 
 public class Carro {
+
     private Long id;
     private String placa;
     private String modelo;
-    private int anoFab;
+    private int ano_fab;
     private int km;
-    private String tipoCarro;
-    private String codigoFilial;
+    private CarroTipo carroTipo;
+    private int filialId;
 
-    // Getters e Setters
+    // Getters e setters
     public Long getId() {
         return id;
     }
@@ -34,12 +35,12 @@ public class Carro {
         this.modelo = modelo;
     }
 
-    public int getAnoFab() {
-        return anoFab;
+    public int getAno_fab() { // Alterado para getAno_fab
+        return ano_fab;
     }
 
-    public void setAnoFab(int anoFab) {
-        this.anoFab = anoFab;
+    public void setAno_fab(int ano_fab) { // Alterado para setAno_fab
+        this.ano_fab = ano_fab;
     }
 
     public int getKm() {
@@ -50,19 +51,21 @@ public class Carro {
         this.km = km;
     }
 
-    public String getTipoCarro() {
-        return tipoCarro;
+    public CarroTipo getCarroTipo() {
+        return carroTipo;
     }
 
-    public void setTipoCarro(String tipoCarro) {
-        this.tipoCarro = tipoCarro;
+    public void setCarroTipo(String carroTipo) {
+        this.carroTipo = CarroTipo.valueOf(carroTipo);
     }
 
-    public String getCodigoFilial() {
-        return codigoFilial;
+    public int getFilialId() {
+        return filialId;
     }
 
-    public void setCodigoFilial(String codigoFilial) {
-        this.codigoFilial = codigoFilial;
+    public void setFilialId(int filialId) {
+        this.filialId = filialId;
     }
+
+
 }
