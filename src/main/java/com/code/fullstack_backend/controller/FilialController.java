@@ -22,12 +22,13 @@ public class FilialController {
         return filialDAO.getAllFilial();
     }
 
-    // Rota para pegar uma filial específica por codigoFilial
-    @GetMapping("/{codigoFilial}")
-    public Filial getFilialByCodigoFilial(@PathVariable String codigoFilial) throws SQLException {
-        return filialDAO.getFilialByCodigoFilial(codigoFilial);
+    // Rota para pegar uma filial específica por id
+    @GetMapping("/{id}")
+    public Filial getFilialById(@PathVariable String id) throws SQLException {
+        return filialDAO.getFilialById(id);
     }
 
+    // Rota para adicionar uma nova filial
     @PostMapping
     public ResponseEntity<String> addFilial(@RequestBody Filial filial) {
         try {
@@ -39,20 +40,34 @@ public class FilialController {
         }
     }
 
-    @PutMapping("/codigo/{codigoFilial}")
-    public void updateFilial(@PathVariable String codigoFilial, @RequestBody Filial filial) throws SQLException {
-        filialDAO.updateFilial(codigoFilial, filial);
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateFilial(@PathVariable String id, @RequestBody Filial filial) {
+        try {
+            boolean isUpdated = filialDAO.updateFilial(id, filial);
+            if (isUpdated) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build(); // 204 No Content para sucesso
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Filial não encontrada.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar filial: " + e.getMessage());
+        }
     }
 
+
+
+
     // Rota para deletar uma filial
-    @DeleteMapping("/{codigoFilial}")
-    public void deleteFilial(@PathVariable String codigoFilial) throws SQLException {
-        filialDAO.deleteFilial(codigoFilial);
+    @DeleteMapping("/{id}")  // Corrigido: /{idl} para /{id}
+    public void deleteFilial(@PathVariable String id) throws SQLException {
+        filialDAO.deleteFilial(id);
     }
 
     // Rota para verificar se o código da filial já existe
-    @GetMapping("/codigo/{codigoFilial}")
-    public boolean existsByCodigoFilial(@PathVariable String codigoFilial) throws SQLException {
-        return filialDAO.existsByCodigoFilial(codigoFilial);
+    @GetMapping("/exists/{id}")  // Corrigido: /id} para /exists/{id}
+    public boolean existsById(@PathVariable String id) throws SQLException {
+        return filialDAO.existsById(id);
     }
 }

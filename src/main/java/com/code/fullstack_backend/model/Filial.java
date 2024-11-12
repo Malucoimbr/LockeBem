@@ -1,32 +1,38 @@
 package com.code.fullstack_backend.model;
-
 public class Filial {
 
+    private Integer id;
     private String nome;
     private String cidade;
     private String estado;
     private String rua;
     private String numero;
     private String telefone;
-    private String codigoFilial;
     private String cnpj; // Novo campo
 
 
     public Filial() {}
 
 
-    public Filial(Long id, String nome, String cidade, String estado, String rua, String numero, String telefone, String codigoFilial, String cnpj) {
+    public Filial(Integer id, String nome, String cidade, String estado, String rua, String numero, String telefone,  String cnpj) {
 
+        this.id = id;
         this.nome = nome;
         this.cidade = cidade;
         this.estado = estado;
         this.rua = rua;
         this.numero = numero;
         this.telefone = telefone;
-        this.codigoFilial = codigoFilial;
         this.cnpj = cnpj;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -76,13 +82,7 @@ public class Filial {
         this.telefone = telefone;
     }
 
-    public String getCodigoFilial() {
-        return codigoFilial;
-    }
 
-    public void setCodigoFilial(String codigoFilial) {
-        this.codigoFilial = codigoFilial;
-    }
 
     public String getCnpj() { // Novo getter
         return cnpj;
@@ -91,4 +91,6 @@ public class Filial {
     public void setCnpj(String cnpj) { // Novo setter
         this.cnpj = cnpj;
     }
+
+
 }
