@@ -38,7 +38,6 @@ public class CarroDAO {
         return false;
     }
 
-    // Recupera todos os carros
     public List<Carro> getAllCarro() throws SQLException {
         List<Carro> carros = new ArrayList<>();
         String sql = "SELECT * FROM carro";
@@ -52,15 +51,16 @@ public class CarroDAO {
                 carro.setModelo(resultSet.getString("modelo"));
                 carro.setAno_fab(resultSet.getInt("ano_fab"));
                 carro.setKm(resultSet.getInt("km"));
-                carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Alterado para setCarroTipo
-                carro.setFilialId(Integer.parseInt(resultSet.getString("Filial_id"))); // Alterado para setFilialId
+                carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Tipo do carro
+                carro.setFilialId(resultSet.getInt("Filial_id"));
+                carro.setValorDiaria(resultSet.getDouble("valor_diaria")); // Recupera o valor diário
                 carros.add(carro);
             }
         }
         return carros;
     }
 
-    // Recupera um carro pelo id
+
     public Carro getCarroById(Long id) throws SQLException {
         Carro carro = null;
         String sql = "SELECT * FROM carro WHERE id = ?";
@@ -75,13 +75,15 @@ public class CarroDAO {
                     carro.setModelo(resultSet.getString("modelo"));
                     carro.setAno_fab(resultSet.getInt("ano_fab"));
                     carro.setKm(resultSet.getInt("km"));
-                    carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Alterado para setCarroTipo
-                    carro.setFilialId(Integer.parseInt(resultSet.getString("Filial_id"))); // Alterado para setFilialId
+                    carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Tipo do carro
+                    carro.setFilialId(resultSet.getInt("Filial_id"));
+                    carro.setValorDiaria(resultSet.getDouble("valor_diaria")); // Recupera o valor diário
                 }
             }
         }
         return carro;
     }
+
 
     public void addCarro(Carro carro) throws SQLException {
         try {
@@ -100,8 +102,8 @@ public class CarroDAO {
                 throw new SQLException("Tipo de carro não pode ser nulo.");
             }
 
-            // SQL para inserir o carro no banco de dados
-            String sql = "INSERT INTO carro (placa, modelo, ano_fab, km, carro_tipo, Filial_id) VALUES (?, ?, ?, ?, ?, ?)";
+            // SQL para inserir o carro no banco de dados, incluindo o valor_diaria
+            String sql = "INSERT INTO carro (placa, modelo, ano_fab, km, carro_tipo, Filial_id, valor_diaria) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -113,6 +115,7 @@ public class CarroDAO {
                 statement.setInt(4, carro.getKm());
                 statement.setString(5, carro.getCarroTipo().name()); // Tipo do carro (enum)
                 statement.setString(6, String.valueOf(carro.getFilialId())); // Código da filial
+                statement.setDouble(7, carro.getValorDiaria()); // Valor diário de aluguel
 
                 // Executando a atualização
                 int rowsAffected = statement.executeUpdate();
@@ -122,7 +125,6 @@ public class CarroDAO {
                 }
 
                 System.out.println("Carro adicionado com sucesso!");
-
             }
         } catch (SQLException e) {
             // Exibindo o erro para depuração
@@ -134,7 +136,6 @@ public class CarroDAO {
 
 
 
-    // Atualiza um carro
     public void updateCarro(Long id, Carro carro) throws SQLException {
         if (existsByPlaca(carro.getPlaca()) && !getCarroById(id).getPlaca().equals(carro.getPlaca())) {
             throw new SQLException("Já existe um carro com a mesma placa.");
@@ -143,18 +144,19 @@ public class CarroDAO {
             throw new SQLException("Código de filial inválido.");
         }
 
-
-        String sql = "UPDATE carro SET placa = ?, modelo = ?, ano_fab = ?, km = ?, carro_tipo = ?, Filial_id = ? WHERE id = ?";
+        String sql = "UPDATE carro SET placa = ?, modelo = ?, ano_fab = ?, km = ?, carro_tipo = ?, Filial_id = ?, valor_diaria = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setString(1, carro.getPlaca());
             statement.setString(2, carro.getModelo());
             statement.setInt(3, carro.getAno_fab());
             statement.setInt(4, carro.getKm());
-            statement.setString(5, carro.getCarroTipo().name()); // Alterado para getCarroTipo
-            statement.setString(6, String.valueOf(carro.getFilialId())); // Converte o int para String
+            statement.setString(5, carro.getCarroTipo().name()); // Tipo do carro
+            statement.setString(6, String.valueOf(carro.getFilialId())); // Código da filial
+            statement.setDouble(7, carro.getValorDiaria()); // Valor diário
+            statement.setLong(8, id); // ID do carro para atualização
 
-            statement.setLong(7, id);
             statement.executeUpdate();
         }
     }

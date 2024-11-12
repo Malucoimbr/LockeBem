@@ -9,6 +9,7 @@ public class Carro {
     private int km;
     private CarroTipo carroTipo;
     private int filialId;
+    private double valorDiaria;
 
     // Getters e setters
     public Long getId() {
@@ -67,5 +68,12 @@ public class Carro {
         this.filialId = filialId;
     }
 
+    public double getValorDiaria() {
+        return valorDiaria;
+    }
+
+    public void setValorDiaria(double valorDiaria) {
+        this.valorDiaria = valorDiaria;
+    }
 
 }
