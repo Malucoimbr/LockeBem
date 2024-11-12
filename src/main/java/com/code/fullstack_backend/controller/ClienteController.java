@@ -20,16 +20,16 @@ public class ClienteController {
     public List<Cliente> getAllCliente() throws SQLException {
         return clienteDAO.getAllCliente();
     }
-    @GetMapping("/{rg}")
-    public ResponseEntity<Cliente> getClienteByRg(@PathVariable Integer rg) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Cliente> getClienteById(@PathVariable Integer id) {
         try {
-            Cliente cliente = clienteDAO.getClienteByRg(rg);
+            Cliente cliente = clienteDAO.getClienteById(id);
             if (cliente == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Retorna 404 se não encontrar
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
             return ResponseEntity.ok(cliente);
         } catch (SQLException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Erro no servidor
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -48,16 +48,15 @@ public class ClienteController {
     }
 
 
-    @PutMapping("/{rg}")
-    public void updateCliente(@PathVariable Integer rg, @RequestBody Cliente cliente) throws SQLException {
-        System.out.println("Dados recebidos para atualização: " + cliente);
-        clienteDAO.updateCliente(rg, cliente);
+    @PutMapping("/{id}")
+    public void updateCliente(@PathVariable Integer id, @RequestBody Cliente cliente) throws SQLException {
+        clienteDAO.updateCliente(id, cliente);
     }
 
 
-    @DeleteMapping("/{rg}")
-    public void deleteCliente(@PathVariable Integer rg) throws SQLException {
-        clienteDAO.deleteCliente(rg);
+    @DeleteMapping("/{id}")
+    public void deleteCliente(@PathVariable Integer id) throws SQLException {
+        clienteDAO.deleteCliente(id);
     }
 
     @GetMapping("/exists/{rg}")

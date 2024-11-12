@@ -2,6 +2,7 @@ package com.code.fullstack_backend.model;
 
 public class Cliente {
 
+    private Integer id; // Nova chave primária
     private Integer rg;
     private String nome;
     private String email;
@@ -10,11 +11,10 @@ public class Cliente {
     private String bairro;
     private Integer numero;
 
-
     public Cliente() {}
 
-
-    public Cliente(Integer rg, String nome, String email, String telefone, String rua, String bairro, Integer numero) {
+    public Cliente(Integer id, Integer rg, String nome, String email, String telefone, String rua, String bairro, Integer numero) {
+        this.id = id;
         this.rg = rg;
         this.nome = nome;
         this.email = email;
@@ -25,6 +25,14 @@ public class Cliente {
     }
 
     // Getters e Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public Integer getRg() {
         return rg;
     }
