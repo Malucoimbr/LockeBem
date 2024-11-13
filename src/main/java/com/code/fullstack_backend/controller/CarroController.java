@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -63,15 +64,14 @@ public class CarroController {
     }
 
     @GetMapping("/carros-disponiveis")
-    public ResponseEntity<List<Carro>> listarCarrosDisponiveis() {
+    public ResponseEntity<List<Carro>> listarCarrosDisponiveis(
+            @RequestParam LocalDate data_inicio, @RequestParam LocalDate data_fim) {
         try {
-            // Obtém os carros que não possuem contrato
-            List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis();
+            List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis(data_inicio, data_fim);
             return ResponseEntity.ok(carrosDisponiveis);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 }

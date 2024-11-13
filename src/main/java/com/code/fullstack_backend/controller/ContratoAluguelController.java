@@ -29,15 +29,18 @@ public class ContratoAluguelController {
     }
 
     @GetMapping("/carros-disponiveis")
-    public ResponseEntity<List<Carro>> listarCarrosDisponiveis(@RequestParam LocalDate data_inicio, @RequestParam LocalDate data_fim) {
+    public ResponseEntity<List<Carro>> listarCarrosDisponiveis(
+            @RequestParam LocalDate data_inicio, @RequestParam LocalDate data_fim) {
         try {
-            List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis();
+            List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis(data_inicio, data_fim);
             return ResponseEntity.ok(carrosDisponiveis);
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+
 
     @PostMapping("/confirmar-contrato")
     public ResponseEntity<String> confirmarContrato(@RequestBody ContratoAluguel request) {

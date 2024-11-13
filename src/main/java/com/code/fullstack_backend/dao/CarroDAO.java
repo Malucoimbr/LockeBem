@@ -188,31 +188,49 @@ public class CarroDAO {
         }
     }
 
-    public List<Carro> getCarrosDisponiveis() throws SQLException {
+    public List<Carro> getCarrosDisponiveis(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
         List<Carro> carros = new ArrayList<>();
-        String sql = "SELECT * FROM carro c " +
-                "LEFT JOIN contrato_aluguel ca ON c.id = ca.carro_id " +
-                "WHERE ca.id IS NULL";  // Isso traz carros sem contrato
+        String sql = "SELECT * " +
+                "FROM carro c " +
+                "WHERE NOT EXISTS (" +
+                "    SELECT 1 " +
+                "    FROM contrato_aluguel ca " +
+                "    WHERE ca.carro_id = c.id " +
+                "    AND (" +
+                "        (ca.data_inicio BETWEEN ? AND ?) " +  // Contrato começa dentro do intervalo
+                "        OR (ca.data_fim BETWEEN ? AND ?) " +  // Contrato termina dentro do intervalo
+                "        OR (? BETWEEN ca.data_inicio AND ca.data_fim) " +  // Data início selecionada se sobrepõe
+                "        OR (? BETWEEN ca.data_inicio AND ca.data_fim) " +  // Data fim selecionada se sobrepõe
+                "    )" +
+                ")";
 
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Carro carro = new Carro();
-                carro.setId(resultSet.getInt("id"));
-                carro.setPlaca(resultSet.getString("placa"));
-                carro.setModelo(resultSet.getString("modelo"));
-                carro.setAno_fab(resultSet.getInt("ano_fab"));
-                carro.setKm(resultSet.getInt("km"));
-                carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Tipo do carro
-                carro.setFilialId(resultSet.getInt("Filial_id"));
-                carro.setValorDiaria(resultSet.getDouble("valor_diaria")); // Recupera o valor diário
-                carros.add(carro);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            // Definindo os parâmetros de data para a consulta SQL
+            statement.setDate(1, java.sql.Date.valueOf(dataInicio));
+            statement.setDate(2, java.sql.Date.valueOf(dataFim));
+            statement.setDate(3, java.sql.Date.valueOf(dataInicio));
+            statement.setDate(4, java.sql.Date.valueOf(dataFim));
+            statement.setDate(5, java.sql.Date.valueOf(dataInicio));
+            statement.setDate(6, java.sql.Date.valueOf(dataFim));
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Carro carro = new Carro();
+                    carro.setId(resultSet.getInt("id"));
+                    carro.setPlaca(resultSet.getString("placa"));
+                    carro.setModelo(resultSet.getString("modelo"));
+                    carro.setAno_fab(resultSet.getInt("ano_fab"));
+                    carro.setKm(resultSet.getInt("km"));
+                    carro.setCarroTipo(resultSet.getString("carro_tipo"));
+                    carro.setFilialId(resultSet.getInt("Filial_id"));
+                    carro.setValorDiaria(resultSet.getDouble("valor_diaria"));
+                    carros.add(carro);
+                }
             }
         }
         return carros;
     }
-
-
 
 }
