@@ -67,6 +67,31 @@ public class ContratoAluguelController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<List<ContratoAluguel>> listarContratos() {
+        try {
+            List<ContratoAluguel> contratos = contratoAluguelDAO.getAllContratos();
+            return ResponseEntity.ok(contratos);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ContratoAluguel> getContratoById(@PathVariable Long id) {
+        try {
+            ContratoAluguel contrato = contratoAluguelDAO.getContratoById(id);
+            if (contrato != null) {
+                return ResponseEntity.ok(contrato);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
 }
