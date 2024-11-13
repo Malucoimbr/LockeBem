@@ -21,7 +21,7 @@ public class ContratoAluguel {
         this.valor_pago = valor_pago;
     }
 
-    // Getters e Setters
+
     public Integer getId() {
         return id;
     }
