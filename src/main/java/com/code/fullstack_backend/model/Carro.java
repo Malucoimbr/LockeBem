@@ -2,7 +2,7 @@ package com.code.fullstack_backend.model;
 
 public class Carro {
 
-    private Long id;
+    private Integer id;
     private String placa;
     private String modelo;
     private int ano_fab;
@@ -12,11 +12,11 @@ public class Carro {
     private double valorDiaria;
 
     // Getters e setters
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -75,5 +75,4 @@ public class Carro {
     public void setValorDiaria(double valorDiaria) {
         this.valorDiaria = valorDiaria;
     }
-
 }

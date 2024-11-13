@@ -61,4 +61,17 @@ public class CarroController {
             return ResponseEntity.status(400).body("Erro ao deletar carro: " + e.getMessage());
         }
     }
+
+    @GetMapping("/carros-disponiveis")
+    public ResponseEntity<List<Carro>> listarCarrosDisponiveis() {
+        try {
+            // Obtém os carros que não possuem contrato
+            List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis();
+            return ResponseEntity.ok(carrosDisponiveis);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
 }

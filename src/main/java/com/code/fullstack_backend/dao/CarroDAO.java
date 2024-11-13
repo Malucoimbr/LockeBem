@@ -3,15 +3,18 @@ package com.code.fullstack_backend.dao;
 import com.code.fullstack_backend.model.Carro;
 import com.code.fullstack_backend.model.CarroTipo;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class CarroDAO {
 
     // Verifica se a placa já existe
     public boolean existsByPlaca(String placa) throws SQLException {
         String sql = "SELECT COUNT(*) FROM carro WHERE placa = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, placa);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -23,10 +26,24 @@ public class CarroDAO {
         return false;
     }
 
+
+        public boolean existsCarroById(int id) throws SQLException {
+            String sql = "SELECT COUNT(*) FROM Carro WHERE id = ?";
+            try (Connection connection = DatabaseConnection.getConnection();
+                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setInt(1, id);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    resultSet.next();
+                    return resultSet.getInt(1) > 0;
+                }
+            }
+        }
+
+
     // Verifica se o código da filial já existe
     public boolean existsByCodigoFilial(String codigoFilial) throws SQLException {
         String sql = "SELECT COUNT(*) FROM filial WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, codigoFilial);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -41,12 +58,12 @@ public class CarroDAO {
     public List<Carro> getAllCarro() throws SQLException {
         List<Carro> carros = new ArrayList<>();
         String sql = "SELECT * FROM carro";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
                 Carro carro = new Carro();
-                carro.setId(resultSet.getLong("id"));
+                carro.setId((int) resultSet.getLong("id"));
                 carro.setPlaca(resultSet.getString("placa"));
                 carro.setModelo(resultSet.getString("modelo"));
                 carro.setAno_fab(resultSet.getInt("ano_fab"));
@@ -64,13 +81,13 @@ public class CarroDAO {
     public Carro getCarroById(Long id) throws SQLException {
         Carro carro = null;
         String sql = "SELECT * FROM carro WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     carro = new Carro();
-                    carro.setId(resultSet.getLong("id"));
+                    carro.setId((int) resultSet.getLong("id"));
                     carro.setPlaca(resultSet.getString("placa"));
                     carro.setModelo(resultSet.getString("modelo"));
                     carro.setAno_fab(resultSet.getInt("ano_fab"));
@@ -105,7 +122,7 @@ public class CarroDAO {
             // SQL para inserir o carro no banco de dados, incluindo o valor_diaria
             String sql = "INSERT INTO carro (placa, modelo, ano_fab, km, carro_tipo, Filial_id, valor_diaria) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            try (Connection connection = DatabaseConnection.getConnection();
+            try (Connection connection = getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
 
                 // Definindo os valores no PreparedStatement
@@ -145,7 +162,7 @@ public class CarroDAO {
         }
 
         String sql = "UPDATE carro SET placa = ?, modelo = ?, ano_fab = ?, km = ?, carro_tipo = ?, Filial_id = ?, valor_diaria = ? WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, carro.getPlaca());
@@ -164,10 +181,38 @@ public class CarroDAO {
     // Exclui um carro
     public void deleteCarro(Long id) throws SQLException {
         String sql = "DELETE FROM carro WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             statement.executeUpdate();
         }
     }
+
+    public List<Carro> getCarrosDisponiveis() throws SQLException {
+        List<Carro> carros = new ArrayList<>();
+        String sql = "SELECT * FROM carro c " +
+                "LEFT JOIN contrato_aluguel ca ON c.id = ca.carro_id " +
+                "WHERE ca.id IS NULL";  // Isso traz carros sem contrato
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                Carro carro = new Carro();
+                carro.setId(resultSet.getInt("id"));
+                carro.setPlaca(resultSet.getString("placa"));
+                carro.setModelo(resultSet.getString("modelo"));
+                carro.setAno_fab(resultSet.getInt("ano_fab"));
+                carro.setKm(resultSet.getInt("km"));
+                carro.setCarroTipo(String.valueOf(CarroTipo.valueOf(resultSet.getString("carro_tipo")))); // Tipo do carro
+                carro.setFilialId(resultSet.getInt("Filial_id"));
+                carro.setValorDiaria(resultSet.getDouble("valor_diaria")); // Recupera o valor diário
+                carros.add(carro);
+            }
+        }
+        return carros;
+    }
+
+
+
 }

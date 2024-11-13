@@ -53,6 +53,18 @@ public class ClienteDAO {
         return cliente;
     }
 
+    public boolean existsClienteById(int id) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Cliente WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt(1) > 0;
+            }
+        }
+    }
+
 
     public void addCliente(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO Cliente (rg, nome, email, telefone, rua, bairro, numero) VALUES (?, ?, ?, ?, ?, ?, ?)";
