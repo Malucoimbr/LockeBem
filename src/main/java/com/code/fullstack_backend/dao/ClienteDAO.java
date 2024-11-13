@@ -4,6 +4,7 @@ import com.code.fullstack_backend.model.Cliente;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ClienteDAO {
 
@@ -130,4 +131,22 @@ public class ClienteDAO {
             }
         }
     }
+
+
+    public Optional<Integer> getIdByRg(Integer rg) throws SQLException {
+        String sql = "SELECT id FROM Cliente WHERE rg = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, rg);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(resultSet.getInt("id"));  // Retorna o ID do cliente
+                }
+                return Optional.empty();  // Retorna Optional vazio se não encontrar o cliente
+            }
+        }
+    }
+
+
+
 }

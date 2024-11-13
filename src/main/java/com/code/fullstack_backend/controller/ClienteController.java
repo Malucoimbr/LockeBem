@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cliente")
@@ -63,4 +64,26 @@ public class ClienteController {
     public boolean existsByRg(@PathVariable Integer rg) throws SQLException {
         return clienteDAO.existsByRg(rg);
     }
+
+    @GetMapping("/idByRg/{rg}")
+    public ResponseEntity<?> getIdByRg(@PathVariable Integer rg) {
+        try {
+            Optional<Integer> id = clienteDAO.getIdByRg(rg);
+            if (id.isEmpty()) {  // Verifica se o Optional está vazio (sem valor)
+                // Cliente não encontrado
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("Cliente não encontrado com o RG: " + rg);
+            }
+            return ResponseEntity.ok(id.get());  // Retorna o ID do cliente dentro do Optional
+        } catch (SQLException e) {
+            // Erro no processamento (ex: conexão com o banco de dados)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro interno ao acessar o banco de dados");
+        }
+    }
+
+
+
+
+
 }

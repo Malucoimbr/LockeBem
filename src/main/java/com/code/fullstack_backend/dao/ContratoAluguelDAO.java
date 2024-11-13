@@ -122,4 +122,25 @@ public class ContratoAluguelDAO {
             throw new SQLException("Erro ao atualizar contrato. Verifique os detalhes e tente novamente.", e);
         }
     }
+
+    // Exclui um contrato pelo ID
+    public void deleteContratoById(Long id) throws SQLException {
+        if (!existsById(id)) {
+            throw new SQLException("Contrato não encontrado para exclusão.");
+        }
+
+        String sql = "DELETE FROM contrato_aluguel WHERE id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new SQLException("Falha ao excluir o contrato. Nenhuma linha foi afetada.");
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Erro ao excluir contrato. Verifique os detalhes e tente novamente.", e);
+        }
+    }
+
 }

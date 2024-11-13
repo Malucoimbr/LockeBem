@@ -93,5 +93,33 @@ public class ContratoAluguelController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteContratoById(@PathVariable Long id) {
+        try {
+            contratoAluguelDAO.deleteContratoById(id);
+            return ResponseEntity.ok("Contrato excluído com sucesso!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir o contrato.");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateContrato(@PathVariable Long id, @RequestBody ContratoAluguel contrato) {
+        try {
+            // Verifica se o contrato existe antes de tentar atualizar
+            if (!contratoAluguelDAO.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrato não encontrado para atualização.");
+            }
+
+            // Atualiza o contrato no banco de dados
+            contratoAluguelDAO.updateContrato(id, contrato);
+            return ResponseEntity.ok("Contrato atualizado com sucesso!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o contrato.");
+        }
+    }
+
 
 }
