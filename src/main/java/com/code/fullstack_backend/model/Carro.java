@@ -3,45 +3,28 @@ package com.code.fullstack_backend.model;
 public class Carro {
 
     private Integer id;
-    private String placa;
-    private String modelo;
-    private int ano_fab;
     private int km;
-    private CarroTipo carroTipo;
-    private int filialId;
+    private String carroTipo;
     private double valorDiaria;
+    private int filialId;
+    private int documentoCarroId;
 
-    // Getters e setters
+    public Carro(Integer id, int km, String carroTipo, double valorDiaria, int filialId, int documentoCarroId) {
+        this.id = id;
+        this.km = km;
+        this.carroTipo = carroTipo;
+        this.valorDiaria = valorDiaria;
+        this.filialId = filialId;
+        this.documentoCarroId = documentoCarroId;
+    }
+
+    // Getters e Setters
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getPlaca() {
-        return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
-
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
-    public int getAno_fab() { // Alterado para getAno_fab
-        return ano_fab;
-    }
-
-    public void setAno_fab(int ano_fab) { // Alterado para setAno_fab
-        this.ano_fab = ano_fab;
     }
 
     public int getKm() {
@@ -52,12 +35,20 @@ public class Carro {
         this.km = km;
     }
 
-    public CarroTipo getCarroTipo() {
+    public String getCarroTipo() {
         return carroTipo;
     }
 
     public void setCarroTipo(String carroTipo) {
-        this.carroTipo = CarroTipo.valueOf(carroTipo);
+        this.carroTipo = carroTipo;
+    }
+
+    public double getValorDiaria() {
+        return valorDiaria;
+    }
+
+    public void setValorDiaria(double valorDiaria) {
+        this.valorDiaria = valorDiaria;
     }
 
     public int getFilialId() {
@@ -68,11 +59,11 @@ public class Carro {
         this.filialId = filialId;
     }
 
-    public double getValorDiaria() {
-        return valorDiaria;
+    public int getDocumentoCarroId() {
+        return documentoCarroId;
     }
 
-    public void setValorDiaria(double valorDiaria) {
-        this.valorDiaria = valorDiaria;
+    public void setDocumentoCarroId(int documentoCarroId) {
+        this.documentoCarroId = documentoCarroId;
     }
 }
