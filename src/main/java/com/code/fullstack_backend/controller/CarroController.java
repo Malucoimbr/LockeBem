@@ -30,17 +30,17 @@ public class CarroController {
         }
     }
 
-    // Rota para exibir um carro pelo ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<String> exibirCarro(@PathVariable Integer id) {
+    public ResponseEntity<Carro> exibirCarro(@PathVariable Integer id) {
         try {
             Optional<Carro> carro = Optional.ofNullable(carroDAO.getCarroById(id));
-            return carro.map(c -> ResponseEntity.ok("Carro: " + c.getCarroTipo() + ", KM: " + c.getKm() + ", Valor Diária: " + c.getValorDiaria()))
-                    .orElseGet(() -> ResponseEntity.status(404).body("Carro não encontrado."));
+            return carro.map(c -> ResponseEntity.ok(c)) // Retorna o objeto Carro diretamente como JSON
+                    .orElseGet(() -> ResponseEntity.status(404).body(null));
         } catch (Exception e) {
-            return ResponseEntity.status(400).body("Erro ao buscar carro: " + e.getMessage());
+            return ResponseEntity.status(400).body(null);
         }
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<String> atualizarCarro(@PathVariable Integer id, @RequestBody Carro carroAtualizado) {
@@ -95,7 +95,6 @@ public class CarroController {
         }
     }
 
-    // Rota para listar carros disponíveis em determinado período (GET)
     @GetMapping("/disponiveis")
     public ResponseEntity<List<Carro>> listarCarrosDisponiveis(
             @RequestParam String dataInicio,
@@ -104,13 +103,19 @@ public class CarroController {
             // Convertendo as datas de String para LocalDate
             LocalDate start = LocalDate.parse(dataInicio);
             LocalDate end = LocalDate.parse(dataFim);
+            System.out.println("Procurando carros disponíveis de " + start + " até " + end); // Log para ver se a rota está sendo chamada
             List<Carro> carrosDisponiveis = carroDAO.getCarrosDisponiveis(start, end);
-            return carrosDisponiveis.isEmpty() ?
-                    ResponseEntity.status(404).body(null) :
-                    ResponseEntity.ok(carrosDisponiveis);
+            if (carrosDisponiveis.isEmpty()) {
+                System.out.println("Nenhum carro disponível encontrado.");
+                return ResponseEntity.status(404).body(null);
+            }
+            System.out.println("Carros encontrados: " + carrosDisponiveis.size());
+            return ResponseEntity.ok(carrosDisponiveis);
         } catch (SQLException e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body(null);
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body(null);
         }
     }

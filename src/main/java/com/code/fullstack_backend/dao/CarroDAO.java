@@ -154,25 +154,20 @@ public class CarroDAO {
 
     public List<Carro> getCarrosDisponiveis(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
         List<Carro> carros = new ArrayList<>();
-        String sql = "SELECT * FROM carro c WHERE NOT EXISTS (" +
-                "    SELECT 1 FROM contrato_aluguel ca WHERE ca.carro_id = c.id " +
-                "    AND (" +
-                "        (ca.data_inicio BETWEEN ? AND ?) " +
-                "        OR (ca.data_fim BETWEEN ? AND ?) " +
-                "        OR (? BETWEEN ca.data_inicio AND ca.data_fim) " +
-                "        OR (? BETWEEN ca.data_inicio AND ca.data_fim) " +
-                "    ))";
+
+        // Corrigindo a consulta SQL
+        String sql = "SELECT * FROM carro " +
+                "LEFT JOIN contrato ON contrato.Carro_id = carro.id " +
+                "WHERE contrato.id IS NULL OR (contrato.data_inicio > ? OR contrato.data_fim < ?)";
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setDate(1, java.sql.Date.valueOf(dataInicio));
-            statement.setDate(2, java.sql.Date.valueOf(dataFim));
-            statement.setDate(3, java.sql.Date.valueOf(dataInicio));
-            statement.setDate(4, java.sql.Date.valueOf(dataFim));
-            statement.setDate(5, java.sql.Date.valueOf(dataInicio));
-            statement.setDate(6, java.sql.Date.valueOf(dataFim));
+            // Definindo corretamente os parâmetros
+            statement.setDate(1, java.sql.Date.valueOf(dataInicio)); // dataInicio
+            statement.setDate(2, java.sql.Date.valueOf(dataFim));    // dataFim
 
+            // Executando a consulta e processando os resultados
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Carro carro = new Carro(
@@ -189,4 +184,7 @@ public class CarroDAO {
         }
         return carros;
     }
+
+
+
 }
