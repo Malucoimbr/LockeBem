@@ -155,17 +155,21 @@ public class CarroDAO {
     public List<Carro> getCarrosDisponiveis(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
         List<Carro> carros = new ArrayList<>();
 
-        // Corrigindo a consulta SQL
+        // SQL ajustado utilizando BETWEEN para verificar sobreposição do período
         String sql = "SELECT * FROM carro " +
                 "LEFT JOIN contrato ON contrato.Carro_id = carro.id " +
-                "WHERE contrato.id IS NULL OR (contrato.data_inicio > ? OR contrato.data_fim < ?)";
+                "WHERE contrato.id IS NULL " +  // Carros sem contrato
+                "OR NOT (contrato.data_inicio BETWEEN ? AND ? " +  // Verifica se a data de início do contrato está no intervalo
+                "OR contrato.data_fim BETWEEN ? AND ?)";  // Verifica se a data de fim do contrato está no intervalo
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             // Definindo corretamente os parâmetros
-            statement.setDate(1, java.sql.Date.valueOf(dataInicio)); // dataInicio
-            statement.setDate(2, java.sql.Date.valueOf(dataFim));    // dataFim
+            statement.setDate(1, java.sql.Date.valueOf(dataInicio)); // dataInicio (data inicial do período solicitado)
+            statement.setDate(2, java.sql.Date.valueOf(dataFim));    // dataFim (data final do período solicitado)
+            statement.setDate(3, java.sql.Date.valueOf(dataInicio)); // Parâmetro de dataInicio
+            statement.setDate(4, java.sql.Date.valueOf(dataFim));    // Parâmetro de dataFim
 
             // Executando a consulta e processando os resultados
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -184,6 +188,9 @@ public class CarroDAO {
         }
         return carros;
     }
+
+
+
 
 
 
