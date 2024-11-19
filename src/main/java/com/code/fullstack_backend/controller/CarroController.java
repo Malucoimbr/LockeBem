@@ -119,4 +119,16 @@ public class CarroController {
             return ResponseEntity.status(500).body(null);
         }
     }
+
+
+    @GetMapping("/qtdedisponiveis")
+    public ResponseEntity<Integer> getCarrosDisponiveis() {
+        try {
+            int carrosDisponiveis = carroDAO.getQuantidadeCarrosDisponiveis();
+            return ResponseEntity.ok(carrosDisponiveis);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

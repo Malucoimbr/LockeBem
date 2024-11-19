@@ -63,4 +63,16 @@ public class MultaController {
     public boolean existsMultaByContratoId(@PathVariable Integer contratoId) throws SQLException {
         return multaDAO.existsMultaByContratoId(contratoId);
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Double> getTotalMultas() {
+        try {
+            double totalMultas = multaDAO.getTotalMultas();
+            return ResponseEntity.ok(totalMultas);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+
 }

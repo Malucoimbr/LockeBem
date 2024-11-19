@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/filial")
@@ -15,6 +16,7 @@ import java.util.List;
 public class FilialController {
 
     private final FilialDAO filialDAO = new FilialDAO();
+
 
     // Rota para listar todas as filiais
     @GetMapping
@@ -56,9 +58,6 @@ public class FilialController {
         }
     }
 
-
-
-
     // Rota para deletar uma filial
     @DeleteMapping("/{id}")  // Corrigido: /{idl} para /{id}
     public void deleteFilial(@PathVariable String id) throws SQLException {
@@ -70,4 +69,12 @@ public class FilialController {
     public boolean existsById(@PathVariable String id) throws SQLException {
         return filialDAO.existsById(id);
     }
+
+
+
+
+
+
+
+
 }

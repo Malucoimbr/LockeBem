@@ -77,4 +77,50 @@ public class FuncionarioController {
                     .body("Erro interno ao acessar o banco de dados");
         }
     }
+
+    @GetMapping("/total")
+    public ResponseEntity<Integer> getTotalFuncionarios() {
+        try {
+            int total = funcionarioDAO.getTotalFuncionarios();
+            return ResponseEntity.ok(total);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+    @GetMapping("/totalAdmitidosUltimoMes")
+    public ResponseEntity<Integer> getTotalFuncionariosAdmitidosUltimoMes() {
+        try {
+            int totalFuncionarios = funcionarioDAO.getTotalFuncionariosAdmitidosUltimoMes();
+            return ResponseEntity.ok(totalFuncionarios); // Retorna a quantidade total de funcionários admitidos
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Retorna erro se falhar
+        }
+    }
+
+    @GetMapping("/mediaFuncionariosPorFilial")
+    public ResponseEntity<Double> getMediaFuncionariosPorFilial() {
+        try {
+            double media = funcionarioDAO.getMediaFuncionariosPorFilial();
+            return ResponseEntity.ok(media); // Retorna a média de funcionários por filial
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // Retorna erro se falhar
+        }
+    }
+
+    @GetMapping("/recentesAdmitidos")
+    public ResponseEntity<List<Funcionario>> getRecentAdmitidos() {
+        try {
+            List<Funcionario> recentAdmitidos = funcionarioDAO.getRecentAdmitidos();
+            if (recentAdmitidos.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Retorna 404 se não encontrar funcionários
+            }
+            return ResponseEntity.ok(recentAdmitidos); // Retorna a lista de funcionários admitidos recentemente
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null); // Retorna erro se falhar
+        }
+    }
+
+
 }

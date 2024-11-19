@@ -4,7 +4,9 @@ import com.code.fullstack_backend.model.Filial;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FilialDAO {
 
@@ -112,4 +114,32 @@ public class FilialDAO {
             }
         }
     }
+
+
+    public Map<String, Integer> getFuncionariosPorFilial() throws SQLException {
+        Map<String, Integer> funcionariosPorFilial = new HashMap<>();
+        String sql = "SELECT f.nome AS filial_nome, " +
+                "(SELECT COUNT(*) FROM funcionarios e WHERE e.filial_id = f.id) AS quantidade_funcionarios " +
+                "FROM filial f";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                String nomeFilial = resultSet.getString("filial_nome");
+                int quantidadeFuncionarios = resultSet.getInt("quantidade_funcionarios");
+                funcionariosPorFilial.put(nomeFilial, quantidadeFuncionarios);
+            }
+        } catch (SQLException e) {
+            // Logando erro
+            System.err.println("Erro ao executar consulta: " + e.getMessage());
+            throw e;  // Relançando a exceção para ser tratada no controlador
+        }
+
+        return funcionariosPorFilial;
+    }
+
+
+
 }

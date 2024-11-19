@@ -4,6 +4,9 @@ import com.code.fullstack_backend.model.ContratoAluguel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class ContratoAluguelDAO {
 
@@ -137,4 +140,83 @@ public class ContratoAluguelDAO {
             throw new SQLException("Erro ao excluir contrato. Verifique os detalhes e tente novamente.", e);
         }
     }
+
+    public double getFaturamentoAcumulado() throws SQLException {
+        String sql = "SELECT SUM(valor_pago) FROM contrato_aluguel";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            if (resultSet.next()) {
+                return resultSet.getDouble(1); // Retorna o valor da soma dos valores pagos
+            } else {
+                return 0.0; // Caso não haja nenhum contrato
+            }
+        }
+    }
+
+    public int getQuantidadeCarrosAlugadosHoje() throws SQLException {
+        String sql = "SELECT COUNT(*) AS total " +
+                "FROM Contrato_aluguel " +
+                "WHERE CURRENT_DATE BETWEEN data_inicio AND data_fim";
+        int total = 0;
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            if (resultSet.next()) {
+                total = resultSet.getInt("total"); // Retorna o total de carros alugados hoje
+            }
+        }
+
+        return total; // Caso nenhum registro seja encontrado
+    }
+
+    public int getContratosEmAndamentoHoje() throws SQLException {
+        String sql = "SELECT COUNT(*) AS total " +
+                "FROM Contrato_aluguel " +
+                "WHERE CURRENT_DATE BETWEEN data_inicio AND data_fim";
+        int total = 0;
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            if (resultSet.next()) {
+                total = resultSet.getInt("total");
+            }
+        }
+
+        return total;
+    }
+
+    public Map<String, Integer> getCarrosAlugadosPorTipo() throws SQLException {
+        String sql = "SELECT tipo.carro_tipo, " +
+                "COALESCE(COUNT(ca.id), 0) AS total " +
+                "FROM (SELECT 'carro_passeio' AS carro_tipo " +
+                "UNION ALL " +
+                "SELECT 'suv' " +
+                "UNION ALL " +
+                "SELECT 'caminhonete') AS tipo " +
+                "LEFT JOIN Carro c ON tipo.carro_tipo = c.carro_tipo " +
+                "LEFT JOIN Contrato_aluguel ca ON c.id = ca.Carro_id " +
+                "AND CURRENT_DATE BETWEEN ca.data_inicio AND ca.data_fim " +
+                "GROUP BY tipo.carro_tipo";
+        Map<String, Integer> carrosAlugadosPorTipo = new HashMap<>();
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                String tipo = resultSet.getString("carro_tipo");
+                int total = resultSet.getInt("total");
+                carrosAlugadosPorTipo.put(tipo, total);
+            }
+        }
+
+        return carrosAlugadosPorTipo;
+    }
+
 }

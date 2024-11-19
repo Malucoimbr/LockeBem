@@ -139,4 +139,72 @@ public class FuncionarioDAO {
             }
         }
     }
+
+
+    public int getTotalFuncionarios() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Funcionario";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1);  // Retorna o total de funcionários
+            }
+            return 0;  // Retorna 0 se não encontrar nenhum funcionário
+        }
+    }
+
+    public int getTotalFuncionariosAdmitidosUltimoMes() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Funcionario WHERE dataAdmissao BETWEEN CURRENT_DATE - INTERVAL 30 DAY AND CURRENT_DATE";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt(1); // Retorna o número de funcionários admitidos no último mês
+            }
+        }
+        return 0; // Retorna 0 se não houver funcionários no último mês
+    }
+
+    public int getMediaFuncionariosPorFilial() throws SQLException {
+        String sql = "SELECT ROUND(AVG(totalFuncionarios)) AS mediaFuncionariosPorFilial " +
+                "FROM (SELECT filialId, COUNT(*) AS totalFuncionarios FROM Funcionario GROUP BY filialId) AS funcionariosPorFilial";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                return resultSet.getInt("mediaFuncionariosPorFilial"); // Retorna a média arredondada
+            }
+        }
+        return 0; // Retorna 0 se não houver dados
+    }
+
+    public List<Funcionario> getRecentAdmitidos() throws SQLException {
+        List<Funcionario> funcionarioList = new ArrayList<>();
+        String sql = "SELECT * FROM Funcionario WHERE dataAdmissao BETWEEN CURRENT_DATE - INTERVAL 30 DAY AND CURRENT_DATE";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Funcionario funcionario = new Funcionario();
+                funcionario.setId(resultSet.getInt("id"));
+                funcionario.setNome(resultSet.getString("nome"));
+                funcionario.setCargo(resultSet.getString("cargo"));
+                funcionario.setTelefone(resultSet.getString("telefone"));
+                funcionario.setDataAdmissao(resultSet.getObject("dataAdmissao", LocalDate.class));
+                funcionario.setEmail(resultSet.getString("email"));
+                funcionario.setFilialId(resultSet.getInt("filialId"));
+                funcionario.setSupervisorId(resultSet.getInt("supervisorId"));
+                funcionarioList.add(funcionario);
+            }
+        }
+
+        return funcionarioList;
+    }
+
+
+
 }

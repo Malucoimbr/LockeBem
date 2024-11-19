@@ -5,6 +5,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class ClienteDAO {
 
@@ -146,6 +149,26 @@ public class ClienteDAO {
             }
         }
     }
+
+    public Map<String, Integer> getClientesPorBairro() throws SQLException {
+        String sql = "SELECT bairro, COUNT(*) AS total FROM Cliente GROUP BY bairro ORDER BY total DESC LIMIT 5";
+        Map<String, Integer> clientesPorBairro = new HashMap<>();
+
+        // Passo 1: Conta a quantidade de clientes por bairro
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                String bairro = resultSet.getString("bairro");
+                int quantidade = resultSet.getInt("total");
+                clientesPorBairro.put(bairro, quantidade); // Armazena a quantidade de clientes por bairro
+            }
+        }
+
+        return clientesPorBairro;
+    }
+
 
 
 

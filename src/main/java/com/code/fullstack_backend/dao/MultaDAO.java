@@ -121,4 +121,16 @@ public class MultaDAO {
         }
     }
 
+    public double getTotalMultas() throws SQLException {
+        String sql = "SELECT SUM(valorMulta) FROM Multa";
+        try (Connection connection = DatabaseConnection.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            if (resultSet.next()) {
+                return resultSet.getDouble(1);  // Retorna o valor total das multas
+            }
+        }
+        return 0.0;
+    }
+
 }

@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class CarroDAO {
@@ -190,7 +192,33 @@ public class CarroDAO {
     }
 
 
+    public int getQuantidadeCarrosDisponiveis() throws SQLException {
+        String sql = "SELECT COUNT(*) AS carros_disponiveis " +
+                "FROM Carro c " +
+                "WHERE c.id NOT IN (" +
+                "   SELECT ca.Carro_id " +
+                "   FROM Contrato_aluguel ca " +
+                "   WHERE CURRENT_DATE BETWEEN ca.data_inicio AND ca.data_fim" +
+                ") " +
+                "AND c.id NOT IN (" +
+                "   SELECT m.carroId " +
+                "   FROM Manutencao m " +
+                "   WHERE CURRENT_DATE = m.dataMan" +
+                ")";
 
+        int carrosDisponiveis = 0;
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            if (resultSet.next()) {
+                carrosDisponiveis = resultSet.getInt("carros_disponiveis");
+            }
+        }
+
+        return carrosDisponiveis;
+    }
 
 
 

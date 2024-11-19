@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 @RestController
 @RequestMapping("/api/contrato-aluguel")
 @CrossOrigin(origins = "http://localhost:3000")
@@ -130,4 +131,50 @@ public class ContratoAluguelController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar o contrato.");
         }
     }
+
+    @GetMapping("/faturamento-acumulado")
+    public ResponseEntity<String> getFaturamentoAcumulado() {
+        try {
+            double faturamento = contratoAluguelDAO.getFaturamentoAcumulado();
+            // Retorna apenas o número formatado, sem texto adicional
+            return ResponseEntity.ok(String.format("%.2f", faturamento));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao calcular o faturamento acumulado.");
+        }
+    }
+
+    @GetMapping("/alugadosHoje")
+    public ResponseEntity<Integer> getQuantidadeCarrosAlugadosHoje() {
+        try {
+            int quantidade = contratoAluguelDAO.getQuantidadeCarrosAlugadosHoje();
+            return ResponseEntity.ok(quantidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Retorna erro 500 em caso de exceção
+        }
+    }
+
+    @GetMapping("/contratosEmAndamentoHoje")
+    public ResponseEntity<Integer> getContratosEmAndamentoHoje() {
+        try {
+            int total = contratoAluguelDAO.getContratosEmAndamentoHoje();
+            return ResponseEntity.ok(total);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
+    @GetMapping("/carrosAlugadosPorTipo")
+    public ResponseEntity<Map<String, Integer>> getCarrosAlugadosPorTipo() {
+        try {
+            Map<String, Integer> carrosAlugados = contratoAluguelDAO.getCarrosAlugadosPorTipo();
+            return ResponseEntity.ok(carrosAlugados);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
+
 }

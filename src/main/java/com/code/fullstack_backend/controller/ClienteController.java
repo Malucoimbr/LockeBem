@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -83,7 +84,15 @@ public class ClienteController {
     }
 
 
-
-
+    @GetMapping("/porBairro")
+    public ResponseEntity<Map<String, Integer>> getClientesPorBairro() {
+        try {
+            Map<String, Integer> clientesPorBairro = clienteDAO.getClientesPorBairro();
+            return ResponseEntity.ok(clientesPorBairro); // Retorna o mapa com a quantidade de clientes por bairro
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Retorna erro em caso de exceção
+        }
+    }
 
 }

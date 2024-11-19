@@ -69,4 +69,35 @@ public class ManutencaoController {
         return manutencaoDAO.existsManutencaoByCarroId(carroId);
     }
 
+    @GetMapping("/custoTotal")
+    public ResponseEntity<Double> getCustoTotalManutencao() {
+        try {
+            double custoTotal = manutencaoDAO.getCustoTotalManutencao();
+            return ResponseEntity.ok(custoTotal);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/custoTotalPorTipoCarro")
+    public ResponseEntity<List<Object[]>> getCustoTotalPorTipoCarro() {
+        try {
+            List<Object[]> custosPorTipoCarro = manutencaoDAO.getCustoTotalPorTipoCarro();
+            return ResponseEntity.ok(custosPorTipoCarro);
+        } catch (SQLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/manutencaoHoje")
+    public ResponseEntity<Integer> getQuantidadeCarrosManutencao() {
+        try {
+            int quantidade = manutencaoDAO.getQuantidadeCarrosManutencao();
+            return ResponseEntity.ok(quantidade);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Retorna erro 500 em caso de exceção
+        }
+    }
+
 }

@@ -5,6 +5,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class ManutencaoDAO {
 
@@ -135,4 +136,60 @@ public class ManutencaoDAO {
             }
         }
     }
+
+    public double getCustoTotalManutencao() throws SQLException {
+        double custoTotal = 0.0;
+        String sql = "SELECT SUM(custoMan) AS custoTotal FROM Manutencao";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            if (resultSet.next()) {
+                custoTotal = resultSet.getDouble("custoTotal");
+            }
+        }
+        return custoTotal;
+    }
+
+    public List<Object[]> getCustoTotalPorTipoCarro() throws SQLException {
+        List<Object[]> custosPorTipoCarro = new ArrayList<>();
+        String sql =
+                "SELECT carroId, tipoMan, " +
+                        "(SELECT SUM(custoMan) FROM Manutencao WHERE carroId = m.carroId) AS custoTotal " +
+                        "FROM Manutencao m GROUP BY carroId, tipoMan";
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Integer carroId = resultSet.getInt("carroId");
+                String tipoMan = resultSet.getString("tipoMan");
+                Double custoTotal = resultSet.getDouble("custoTotal");
+
+                custosPorTipoCarro.add(new Object[] { carroId, tipoMan, custoTotal });
+            }
+        }
+        return custosPorTipoCarro;
+    }
+
+    public int getQuantidadeCarrosManutencao() throws SQLException {
+        String sql = "SELECT COUNT(*) AS total " +
+                "FROM Manutencao " +
+                "WHERE dataMan = CURRENT_DATE";
+        int total = 0;
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            if (resultSet.next()) {
+                total = resultSet.getInt("total"); // Retorna o total de carros alugados hoje
+            }
+        }
+
+        return total; // Caso nenhum registro seja encontrado
+    }
+
 }
