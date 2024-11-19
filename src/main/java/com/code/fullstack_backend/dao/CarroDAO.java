@@ -101,13 +101,7 @@ public class CarroDAO {
 
 
     public void updateCarro(Integer id, Carro carro) throws SQLException {
-        // Verificar se o carro existe antes de tentar atualizar
-        if (!existsById(id)) {
-            throw new SQLException("Carro não encontrado.");
-        }
-
-        String sql = "UPDATE carro SET km = ?, carro_tipo = ?, Filial_id = ?, valor_diaria = ?, Documento_id = ? WHERE id = ?";
-
+        String sql = "UPDATE Carro SET km = ?, carro_tipo = ?, Filial_id = ?, valor_diaria = ?, Documento_id = ? WHERE id = ?";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
@@ -118,16 +112,10 @@ public class CarroDAO {
             statement.setInt(5, carro.getDocumentoCarroId());
             statement.setInt(6, id);
 
-            int rowsAffected = statement.executeUpdate();
-
-            // Verifica se realmente houve alteração no banco
-            if (rowsAffected == 0) {
-                throw new SQLException("Erro ao atualizar o carro ou carro não encontrado.");
-            }
+            statement.executeUpdate();
         }
     }
 
-    // Método auxiliar para verificar se o carro existe no banco
     private boolean existsById(Integer id) throws SQLException {
         String sql = "SELECT COUNT(*) FROM carro WHERE id = ?";
 

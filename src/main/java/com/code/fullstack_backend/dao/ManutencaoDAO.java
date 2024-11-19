@@ -142,7 +142,7 @@ public class ManutencaoDAO {
 
     public double getCustoTotalManutencao() throws SQLException {
         double custoTotal = 0.0;
-        String sql = "SELECT SUM(custoMan) AS custoTotal FROM Manutencao";
+        String sql = "SELECT SUM(custoMan) AS custoTotal FROM Manutencao WHERE YEAR(dataMan) = YEAR(CURRENT_DATE)";
 
         try (Connection connection = DatabaseConnection.getConnection();
              Statement statement = connection.createStatement();
@@ -199,6 +199,7 @@ public class ManutencaoDAO {
         String sql =
                 "SELECT m.tipoMan, SUM(m.custoMan) AS total_custo " +
                         "FROM Manutencao m " +
+                        "WHERE YEAR(m.dataMan) = YEAR(CURRENT_DATE) " +
                         "GROUP BY m.tipoMan " +
                         "ORDER BY total_custo DESC " +
                         "LIMIT 5";

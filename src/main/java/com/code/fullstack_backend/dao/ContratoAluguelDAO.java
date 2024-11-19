@@ -142,7 +142,7 @@ public class ContratoAluguelDAO {
     }
 
     public double getFaturamentoAcumulado() throws SQLException {
-        String sql = "SELECT SUM(valor_pago) FROM contrato_aluguel";
+        String sql = "SELECT SUM(valor_pago) FROM contrato_aluguel WHERE YEAR(data_inicio) = YEAR(CURRENT_DATE)";
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {

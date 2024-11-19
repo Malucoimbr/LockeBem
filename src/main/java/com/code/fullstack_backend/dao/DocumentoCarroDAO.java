@@ -38,53 +38,43 @@ public class DocumentoCarroDAO {
     }
 
 
-
-    // Método para buscar um documento de carro pelo ID
-    public Optional<DocumentoCarro> getDocumentoCarroById(Integer id) throws SQLException {
+    public DocumentoCarro getDocumentoCarroById(Integer id) throws SQLException {
+        DocumentoCarro documentoCarro = null;
         String sql = "SELECT * FROM documento_carro WHERE id = ?";
-        try (Connection connection = getConnection(); // Obtendo a conexão
+        try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-
-            if (resultSet.next()) {
-                DocumentoCarro documentoCarro = new DocumentoCarro();
-                documentoCarro.setId(resultSet.getInt("id"));
-                documentoCarro.setAnoFab(resultSet.getInt("ano_fab"));
-                documentoCarro.setChassi(resultSet.getString("chassi"));
-                documentoCarro.setModelo(resultSet.getString("modelo"));
-                documentoCarro.setPlaca(resultSet.getString("placa"));
-                return Optional.of(documentoCarro);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    documentoCarro = new DocumentoCarro();
+                    documentoCarro.setId(resultSet.getInt("id"));
+                    documentoCarro.setAnoFab(resultSet.getInt("ano_fab"));
+                    documentoCarro.setChassi(resultSet.getString("chassi"));
+                    documentoCarro.setModelo(resultSet.getString("modelo"));
+                    documentoCarro.setPlaca(resultSet.getString("placa"));
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new SQLException("Erro ao buscar o documento do carro: " + e.getMessage());
         }
-        return Optional.empty();
+        return documentoCarro;
     }
 
-    public void updateDocumentoCarro(DocumentoCarro documentoCarro) throws SQLException {
+
+    public void updateDocumentoCarro(Integer id, DocumentoCarro documentoCarro) throws SQLException {
         String sql = "UPDATE Documento_carro SET ano_fab = ?, chassi = ?, modelo = ?, placa = ? WHERE id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, documentoCarro.getAnoFab());  // Ano de fabricação
-            stmt.setString(2, documentoCarro.getChassi());  // Chassi
-            stmt.setString(3, documentoCarro.getModelo());  // Modelo
-            stmt.setString(4, documentoCarro.getPlaca());  // Placa
-            stmt.setInt(5, documentoCarro.getId());  // ID do documento (a chave primária)
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, documentoCarro.getAnoFab());
+            statement.setString(2, documentoCarro.getChassi());
+            statement.setString(3, documentoCarro.getModelo());
+            statement.setString(4, documentoCarro.getPlaca());
+            statement.setInt(5, id);
 
-            int rowsAffected = stmt.executeUpdate();  // Executa a atualização no banco
-            if (rowsAffected == 0) {
-                throw new SQLException("Nenhuma linha foi atualizada. Verifique o ID.");
-            }
-        } catch (SQLException e) {
-            throw new SQLException("Erro ao atualizar documento do carro: " + e.getMessage(), e);
+            statement.executeUpdate();
         }
     }
 
-
-    // Método para excluir um documento de carro do banco de dados
     public void deleteDocumentoCarro(Integer id) throws SQLException {
         String sql = "DELETE FROM documento_carro WHERE id = ?";
 

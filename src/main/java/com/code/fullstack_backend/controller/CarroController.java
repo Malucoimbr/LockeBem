@@ -17,7 +17,6 @@ public class CarroController {
 
     private CarroDAO carroDAO = new CarroDAO();
 
-    // Rota para criar um novo carro (POST)
     @PostMapping
     public ResponseEntity<String> criarCarro(@RequestBody Carro carro) {
         try {
@@ -43,26 +42,10 @@ public class CarroController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizarCarro(@PathVariable Integer id, @RequestBody Carro carroAtualizado) {
-        try {
-            Optional<Carro> carroExistente = Optional.ofNullable(carroDAO.getCarroById(id));
-            if (carroExistente.isPresent()) {
-                carroAtualizado.setId(id);  // Garantir que o ID não seja alterado
-                carroDAO.updateCarro(id, carroAtualizado);
-                return ResponseEntity.status(200).body("Carro atualizado com sucesso!");
-            } else {
-                return ResponseEntity.status(404).body("Carro não encontrado para atualização.");
-            }
-        } catch (SQLException e) {
-            return ResponseEntity.status(500).body("Erro ao acessar o banco de dados: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body("Erro ao atualizar carro: " + e.getMessage());
-        }
+    public void updateCarro(@PathVariable Integer id, @RequestBody Carro carro) throws SQLException {
+        carroDAO.updateCarro(id, carro);
     }
 
-
-
-    // Rota para deletar um carro pelo ID (DELETE)
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarCarro(@PathVariable Integer id) {
         try {
@@ -80,7 +63,6 @@ public class CarroController {
         }
     }
 
-    // Rota para listar todos os carros (GET)
     @GetMapping
     public ResponseEntity<List<Carro>> listarCarros() {
         try {

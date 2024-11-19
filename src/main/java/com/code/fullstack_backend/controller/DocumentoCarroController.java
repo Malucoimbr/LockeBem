@@ -2,6 +2,7 @@ package com.code.fullstack_backend.controller;
 
 import com.code.fullstack_backend.dao.DocumentoCarroDAO;
 import com.code.fullstack_backend.model.DocumentoCarro;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,48 +40,42 @@ public class DocumentoCarroController {
         }
     }
 
-    // Rota para exibir um documento de carro pelo ID (GET)
     @GetMapping("/{id}")
-    public ResponseEntity<String> exibirDocumentoCarro(@PathVariable Integer id) {
+    public ResponseEntity<DocumentoCarro> getDocumentoCarroById(@PathVariable Integer id) {
         try {
-            Optional<DocumentoCarro> documentoCarro = documentoCarroDAO.getDocumentoCarroById(id);
-            return documentoCarro.map(dc -> ResponseEntity.ok("Documento Carro: " + dc.getChassi() + ", Modelo: " + dc.getModelo() + ", Placa: " + dc.getPlaca()))
-                    .orElseGet(() -> ResponseEntity.status(404).body("Documento do carro não encontrado."));
-        } catch (SQLException e) {
-            return ResponseEntity.status(500).body("Erro ao buscar documento do carro: " + e.getMessage());
-        }
-    }
-
-    // Rota para atualizar os dados de um documento de carro (PUT)
-    @PutMapping("/{id}")
-    public ResponseEntity<String> atualizarDocumentoCarro(@PathVariable Integer id, @RequestBody DocumentoCarro documentoCarroAtualizado) {
-        try {
-            Optional<DocumentoCarro> documentoExistente = documentoCarroDAO.getDocumentoCarroById(id);
-            if (documentoExistente.isPresent()) {
-                documentoCarroAtualizado.setId(id);  // Garantir que o ID não seja alterado
-                documentoCarroDAO.updateDocumentoCarro(documentoCarroAtualizado);
-                return ResponseEntity.status(200).body("Documento do carro atualizado com sucesso!");
+            DocumentoCarro documentoCarro = documentoCarroDAO.getDocumentoCarroById(id);
+            if (documentoCarro == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
-            return ResponseEntity.status(404).body("Documento do carro não encontrado para atualização.");
+            return ResponseEntity.ok(documentoCarro);
         } catch (SQLException e) {
-            return ResponseEntity.status(500).body("Erro ao atualizar documento do carro: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    // Rota para deletar um documento de carro pelo ID (DELETE)
+
+
+    @PutMapping("/{id}")
+    public void updateDocumentoCarro(@PathVariable Integer id, @RequestBody DocumentoCarro documentoCarro) throws SQLException {
+        documentoCarroDAO.updateDocumentoCarro(id, documentoCarro);
+    }
+
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletarDocumentoCarro(@PathVariable Integer id) {
         try {
-            Optional<DocumentoCarro> documentoExistente = documentoCarroDAO.getDocumentoCarroById(id);
+            Optional<DocumentoCarro> documentoExistente = Optional.ofNullable(documentoCarroDAO.getDocumentoCarroById(id));
             if (documentoExistente.isPresent()) {
                 documentoCarroDAO.deleteDocumentoCarro(id);
-                return ResponseEntity.status(200).body("Documento do carro deletado com sucesso!");
+                return ResponseEntity.status(HttpStatus.OK).body("Documento do carro deletado com sucesso!");
             }
-            return ResponseEntity.status(404).body("Documento do carro não encontrado para exclusão.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Documento do carro não encontrado para exclusão.");
         } catch (SQLException e) {
-            return ResponseEntity.status(500).body("Erro ao deletar documento do carro: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deletar documento do carro: " + e.getMessage());
         }
     }
+
 
     @GetMapping
     public ResponseEntity<List<DocumentoCarro>> listarTodosDocumentosCarro() {

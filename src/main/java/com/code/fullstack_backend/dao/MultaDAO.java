@@ -122,7 +122,7 @@ public class MultaDAO {
     }
 
     public double getTotalMultas() throws SQLException {
-        String sql = "SELECT SUM(valorMulta) FROM Multa";
+        String sql = "SELECT SUM(valorMulta) FROM Multa WHERE YEAR(dataMulta) = YEAR(CURRENT_DATE)";
         try (Connection connection = DatabaseConnection.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
