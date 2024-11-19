@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -121,6 +122,21 @@ public class FuncionarioController {
                     .body(null); // Retorna erro se falhar
         }
     }
+
+    @GetMapping("/porFilial")
+    public ResponseEntity<Map<String, Integer>> getFuncionariosPorFilial() {
+        try {
+            // Chama o método do DAO para obter a contagem de funcionários por filial
+            Map<String, Integer> funcionariosPorFilial = funcionarioDAO.getFuncionariosPorFilial();
+            return ResponseEntity.ok(funcionariosPorFilial); // Retorna o mapa com a quantidade de funcionários por filial
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Retorna erro em caso de exceção
+        }
+    }
+
+
+
 
 
 }

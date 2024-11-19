@@ -17,20 +17,16 @@ public class FilialController {
 
     private final FilialDAO filialDAO = new FilialDAO();
 
-
-    // Rota para listar todas as filiais
     @GetMapping
     public List<Filial> getAllFilial() throws SQLException {
         return filialDAO.getAllFilial();
     }
 
-    // Rota para pegar uma filial específica por id
     @GetMapping("/{id}")
     public Filial getFilialById(@PathVariable String id) throws SQLException {
         return filialDAO.getFilialById(id);
     }
 
-    // Rota para adicionar uma nova filial
     @PostMapping
     public ResponseEntity<String> addFilial(@RequestBody Filial filial) {
         try {
@@ -58,23 +54,14 @@ public class FilialController {
         }
     }
 
-    // Rota para deletar uma filial
-    @DeleteMapping("/{id}")  // Corrigido: /{idl} para /{id}
+    @DeleteMapping("/{id}")
     public void deleteFilial(@PathVariable String id) throws SQLException {
         filialDAO.deleteFilial(id);
     }
 
-    // Rota para verificar se o código da filial já existe
-    @GetMapping("/exists/{id}")  // Corrigido: /id} para /exists/{id}
+
+    @GetMapping("/exists/{id}")
     public boolean existsById(@PathVariable String id) throws SQLException {
         return filialDAO.existsById(id);
     }
-
-
-
-
-
-
-
-
 }

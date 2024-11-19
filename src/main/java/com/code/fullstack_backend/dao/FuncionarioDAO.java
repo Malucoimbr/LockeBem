@@ -3,9 +3,9 @@ package com.code.fullstack_backend.dao;
 import com.code.fullstack_backend.model.Funcionario;
 import java.sql.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class FuncionarioDAO {
 
@@ -204,6 +204,31 @@ public class FuncionarioDAO {
 
         return funcionarioList;
     }
+
+    public Map<String, Integer> getFuncionariosPorFilial() throws SQLException {
+        Map<String, Integer> funcionariosPorFilial = new HashMap<>();
+
+        // Consulta com subconsulta para contar os funcionários por filial e obter os nomes das filiais
+        String sql = "SELECT f.nome, COUNT(*) AS total_funcionarios " +
+                "FROM Funcionario fu " +
+                "JOIN Filial f ON fu.filialId = f.id " +
+                "GROUP BY f.id ORDER BY total_funcionarios DESC";
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            // Armazenamos os resultados no mapa
+            while (resultSet.next()) {
+                String nomeFilial = resultSet.getString("nome");
+                int totalFuncionarios = resultSet.getInt("total_funcionarios");
+                funcionariosPorFilial.put(nomeFilial, totalFuncionarios); // Armazena o nome da filial e a quantidade de funcionários
+            }
+        }
+
+        return funcionariosPorFilial;
+    }
+
 
 
 

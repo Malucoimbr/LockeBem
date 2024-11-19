@@ -4,7 +4,10 @@ import com.code.fullstack_backend.model.Manutencao;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
 
 public class ManutencaoDAO {
@@ -190,6 +193,31 @@ public class ManutencaoDAO {
         }
 
         return total; // Caso nenhum registro seja encontrado
+    }
+
+    public List<Map<String, Object>> getTop5ManutencaoComMaiorCusto() throws SQLException {
+        String sql =
+                "SELECT m.tipoMan, SUM(m.custoMan) AS total_custo " +
+                        "FROM Manutencao m " +
+                        "GROUP BY m.tipoMan " +
+                        "ORDER BY total_custo DESC " +
+                        "LIMIT 5";
+
+        List<Map<String, Object>> manutencaoComMaiorCusto = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            while (resultSet.next()) {
+                Map<String, Object> manutencao = new HashMap<>();
+                manutencao.put("tipoMan", resultSet.getString("tipoMan"));
+                manutencao.put("total_custo", resultSet.getDouble("total_custo"));
+                manutencaoComMaiorCusto.add(manutencao);
+            }
+        }
+
+        return manutencaoComMaiorCusto;
     }
 
 }

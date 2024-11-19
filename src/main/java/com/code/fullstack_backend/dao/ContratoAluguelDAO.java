@@ -219,4 +219,34 @@ public class ContratoAluguelDAO {
         return carrosAlugadosPorTipo;
     }
 
+
+    public Map<Integer, Double> getFaturamentoPorMes() throws SQLException {
+        // Criando a consulta SQL
+        String sql = "SELECT MONTH(data_inicio) AS mes, SUM(valor_pago) AS faturamento " +
+                "FROM Contrato_aluguel " +
+                "WHERE YEAR(data_inicio) = YEAR(CURRENT_DATE) " +
+                "GROUP BY MONTH(data_inicio) " +
+                "ORDER BY mes ASC";
+
+        Map<Integer, Double> faturamentoPorMes = new HashMap<>();
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+
+            // Preenchendo o mapa com os dados dos meses
+            while (resultSet.next()) {
+                int mes = resultSet.getInt("mes");
+                double faturamento = resultSet.getDouble("faturamento");
+                faturamentoPorMes.put(mes, faturamento);
+            }
+        }
+
+        // Preenchendo os meses que não têm faturamento (meses futuros ou sem registros)
+        for (int i = 1; i <= 12; i++) {
+            faturamentoPorMes.putIfAbsent(i, 0.0);
+        }
+
+        return faturamentoPorMes;
+    }
 }

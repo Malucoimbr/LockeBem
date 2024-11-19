@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/manutencao")
@@ -97,6 +98,17 @@ public class ManutencaoController {
         } catch (SQLException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body(null); // Retorna erro 500 em caso de exceção
+        }
+    }
+
+    @GetMapping("/top5manutencao")
+    public ResponseEntity<List<Map<String, Object>>> getTop5ManutencaoComMaiorCusto() {
+        try {
+            List<Map<String, Object>> manutencaoComMaiorCusto = manutencaoDAO.getTop5ManutencaoComMaiorCusto();
+            return ResponseEntity.ok(manutencaoComMaiorCusto);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null); // Retorna status 500 em caso de erro
         }
     }
 

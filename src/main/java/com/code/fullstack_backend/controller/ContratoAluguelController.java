@@ -177,4 +177,15 @@ public class ContratoAluguelController {
         }
     }
 
+    @GetMapping("/faturamentoAnoAtual")
+    public ResponseEntity<Map<Integer, Double>> getFaturamentoPorMes() {
+        try {
+            // Chama o DAO para obter o faturamento por mês
+            Map<Integer, Double> faturamentoPorMes = contratoAluguelDAO.getFaturamentoPorMes();
+            return ResponseEntity.ok(faturamentoPorMes);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(null);
+        }
+    }
 }

@@ -8,13 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.code.fullstack_backend.dao.DatabaseConnection.getConnection;
+
 public class FilialDAO {
 
     // Método para obter todas as filial
     public List<Filial> getAllFilial() throws SQLException {
         List<Filial> filialList = new ArrayList<>();
         String sql = "SELECT * FROM filial";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
@@ -38,7 +40,7 @@ public class FilialDAO {
     public Filial getFilialById(String id) throws SQLException {
         Filial filial = null;
         String sql = "SELECT * FROM filial WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -61,7 +63,7 @@ public class FilialDAO {
     // Método para adicionar uma nova filial
     public void addFilial(Filial filial) throws SQLException {
         String sql = "INSERT INTO filial ( nome, cidade, estado, rua, numero, telefone, cnpj) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
             statement.setString(1, filial.getNome());
@@ -77,7 +79,7 @@ public class FilialDAO {
 
     public boolean updateFilial(String id, Filial filial) throws SQLException {
         String sql = "UPDATE filial SET nome = ?, cidade = ?, estado = ?, rua = ?, numero = ?, telefone = ?, cnpj = ? WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, filial.getNome());
             statement.setString(2, filial.getCidade());
@@ -96,7 +98,7 @@ public class FilialDAO {
     // Método para excluir uma filial
     public void deleteFilial(String id) throws SQLException {
         String sql = "DELETE FROM filial WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             statement.executeUpdate();
@@ -106,38 +108,13 @@ public class FilialDAO {
     // Método para verificar se o código da filial já existe
     public boolean existsById(String id) throws SQLException {
         String sql = "SELECT 1 FROM filial WHERE id = ?";
-        try (Connection connection = DatabaseConnection.getConnection();
+        try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return resultSet.next();
             }
         }
-    }
-
-
-    public Map<String, Integer> getFuncionariosPorFilial() throws SQLException {
-        Map<String, Integer> funcionariosPorFilial = new HashMap<>();
-        String sql = "SELECT f.nome AS filial_nome, " +
-                "(SELECT COUNT(*) FROM funcionarios e WHERE e.filial_id = f.id) AS quantidade_funcionarios " +
-                "FROM filial f";
-
-        try (Connection connection = DatabaseConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                String nomeFilial = resultSet.getString("filial_nome");
-                int quantidadeFuncionarios = resultSet.getInt("quantidade_funcionarios");
-                funcionariosPorFilial.put(nomeFilial, quantidadeFuncionarios);
-            }
-        } catch (SQLException e) {
-            // Logando erro
-            System.err.println("Erro ao executar consulta: " + e.getMessage());
-            throw e;  // Relançando a exceção para ser tratada no controlador
-        }
-
-        return funcionariosPorFilial;
     }
 
 
