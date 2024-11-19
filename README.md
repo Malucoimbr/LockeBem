@@ -55,13 +55,12 @@ Este guia oferece instruções para configurar, executar e utilizar o sistema de
    [**Script para Popular o Banco**](https://docs.google.com/document/d/1otw1zyeUub22NI3co7vpSJlBW517UMpILoV4z9iDD7A/edit?usp=sharing)
 
 5. **Execute as Aplicações:**  
-   Para rodar o backend utilizamos o **IntelliJ IDEA** e no frontend o **Visual Studio Code**.  
-   Certifique-se de que ambos os servidores estejam em execução para garantir a comunicação entre eles.
+   Com ambos os repositórios clonados, inicie a execução das duas aplicações. Isso pode ser feito através de comandos específicos do ambiente de desenvolvimento ou utilizando IDEs como IntelliJ IDEA, Eclipse ou Visual Studio Code. (usamos vscode para o front e Intellij para o back)
+Certifique-se de que ambas as aplicações estão em execução corretamente, garantindo assim a comunicação entre o frontend e o backend.
 
 
 6. **Acesse o Sistema:**  
-   Abra o navegador e acesse:  
-   [**http://localhost:3000**](http://localhost:3000)
+  Após iniciar as aplicações, abra um navegador da web e acesse o endereço http://localhost:3000
 ---
 
 ## Equipe
