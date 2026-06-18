@@ -1,4 +1,4 @@
-# 🚗 Sistema de Gestão de Aluguéis - Lokebem 🚗
+# 🚗 Sistema de Gestão de Aluguéis 🚗
 
 ## Descrição
 Este sistema foi desenvolvido para atender às necessidades da Lokebem, oferecendo uma solução completa para gerenciamento de aluguéis de veículos.  
